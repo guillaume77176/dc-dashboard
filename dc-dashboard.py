@@ -23,7 +23,7 @@ st.set_page_config(
 )
 
 """
-# :material/query_stats: Stock peer analysis
+# :material/query_stats: Dashboard Data center id X
 
 Start here
 """
