@@ -17,7 +17,7 @@ import streamlit as st
 
 
 st.set_page_config(
-    page_title="Stock peer analysis dashboard",
+    page_title="Dashboard Data center id X",
     page_icon=":chart_with_upwards_trend:",
     layout="wide",
 )
@@ -25,7 +25,7 @@ st.set_page_config(
 """
 # :material/query_stats: Stock peer analysis
 
-Easily compare stocks against others in their peer group.
+Start here
 """
 
 ""  # Add some space.
