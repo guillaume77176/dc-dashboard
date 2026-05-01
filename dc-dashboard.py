@@ -200,7 +200,7 @@ if "pred_y" not in st.session_state:
     st.session_state.pred_y = []
 
 if "historical_y" not in st.session_state:
-    st.session_state.historical_y = pd.DataFrame(columns=df.columns)
+    st.session_state.historical_y = []
 
 if "act_t" not in st.session_state:
     st.session_state.act_t = []
@@ -225,12 +225,12 @@ if st.button("🔮 Next prediction step (from xgb)"):
         delta = pred[st.session_state.idx_y]
         act = actions_opt.iloc[st.session_state.idx_y,:]
         contrib = df_interpret_10min.iloc[st.session_state.idx_y,:]
-        historical_y = df_hist.iloc[st.session_state.idx_y,:]
+        historical_y = df_hist.iloc[st.session_state.idx_y,0]
     else:
         delta = pred[-1]  # fallback
         act = actions_opt.iloc[-1,:]
-        contrib = df_interpret_10min.iloc[-1,:]
-        historical_y = df_hist.iloc[-1,:]
+        contrib = df_interpret_10min.iloc[-1,:0]
+        historical_y = df_hist.iloc[-1,0]
 
     new_pred = delta
     new_action = act
@@ -250,7 +250,7 @@ if st.button("🔮 Next prediction step (from xgb)"):
     st.session_state.pred_x.append(new_time)
     st.session_state.act_t.append(new_action)
     st.session_state.contrib_t.append(new_contrib)
-    st.session_state.historical_y = pd.concat([st.session_state.historical_y, new_hist], axis = 0)
+    st.session_state.historical_y.append(new_hist)
     st.session_state.idx_y += 1
 
 if st.button("🔄 Refresh"):
