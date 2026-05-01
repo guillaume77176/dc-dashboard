@@ -226,12 +226,12 @@ if st.button("🔮 Next prediction step (from xgb)"):
         delta = pred[st.session_state.idx_y]
         act = actions_opt.iloc[st.session_state.idx_y,:]
         contrib = df_interpret_10min.iloc[st.session_state.idx_y,:]
-        historical_y = df_hist.iloc[st.session_state.idx_y,0]
+        historical_y = df_hist.iloc[st.session_state.idx_y]
     else:
         delta = pred[-1]  # fallback
         act = actions_opt.iloc[-1,:]
         contrib = df_interpret_10min.iloc[-1,:]
-        historical_y = df_hist.iloc[-1,0]
+        historical_y = df_hist.iloc[-1]
 
     new_pred = delta
     new_action = act
