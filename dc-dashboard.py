@@ -164,26 +164,22 @@ selected_metric = metrics[met]
 columns_to_plot = ["index_time"] + [selected_metric]
 
 
-
-
 df = get_data_viz(data_global, columns_to_plot)
 df["index_time"] = pd.to_datetime(df["index_time"])
 
 
-try:
-    start_date = pd.to_datetime(start_date)
-    end_date = pd.to_datetime(end_date)
-    mask = (df["index_time"] >= start_date) & (df["index_time"] <= end_date)
-    df = df.loc[mask]
 
-    pred = func_c(data_it, model, end_date, steps=nb_step_predict)
+start_date = pd.to_datetime(start_date)
+end_date = pd.to_datetime(end_date)
+mask = (df["index_time"] >= start_date) & (df["index_time"] <= end_date)
+df = df.loc[mask]
 
-    actions_opt = get_control(data_control, end_date, steps=nb_step_predict)
+pred = func_c(data_it, model, end_date, steps=nb_step_predict)
 
-    df_interpret_10min = interpret(data_it, gam, end_date, steps=nb_step_predict)
+actions_opt = get_control(data_control, end_date, steps=nb_step_predict)
 
-except NameError:
-    pass
+df_interpret_10min = interpret(data_it, gam, end_date, steps=nb_step_predict)
+
 
 
 
