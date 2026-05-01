@@ -18,37 +18,48 @@ def pred_cop2(end_date, steps):
 
     return pred_cop2
 
-def interpret_cop1(end_date, steps = 1):
-    input = get_X_cop1(end_date=end_date, steps=steps)
-    gam = joblib.load("models_cop/gam_cop_model1.pkl")
-    contributions = []
-    for i in range(input.shape[1]):
-        c = gam.partial_dependence(term=i, X=input)[0]
-        contributions.append(c)
-    df_contrib = pd.DataFrame({
-    "variable": input.columns,
-    "contribution": contributions
-    })
+def interpret_cop1(end_date, steps):
+    X = get_X_cop1(end_date=end_date, steps=steps)
 
-    df_contrib["abs"] = df_contrib["contribution"].abs()
-    df_contrib = df_contrib.sort_values("abs", ascending=False)
+    gam = joblib.load("models_cop/gam_cop_model1.pkl")
+
+    contrib_matrix = []
+
+    for i in range(X.shape[1]):
+        # contribution de la variable i POUR TOUTES les lignes
+        f_i = gam.partial_dependence(term=i, X=X)
+        contrib_matrix.append(f_i)
+
+    # shape = (n_samples, n_features)
+    contrib_matrix = np.column_stack(contrib_matrix)
+
+    # dataframe lisible
+    df_contrib = pd.DataFrame(
+        contrib_matrix,
+        columns=X.columns
+    )
 
     return df_contrib
 
-def interpret_cop2(end_date, steps = 1):
-    input = get_X_cop2(end_date=end_date, steps=steps)
+def interpret_cop2(end_date, steps):
+    X = get_X_cop2(end_date=end_date, steps=steps)
+
     gam = joblib.load("models_cop/gam_cop_model2.pkl")
-    contributions = []
-    for i in range(input.shape[1]):
-        c = gam.partial_dependence(term=i, X=input)[0]
-        contributions.append(c)
-    df_contrib = pd.DataFrame({
-    "variable": input.columns,
-    "contribution": contributions
-    })
 
-    df_contrib["abs"] = df_contrib["contribution"].abs()
-    df_contrib = df_contrib.sort_values("abs", ascending=False)
+    contrib_matrix = []
 
+    for i in range(X.shape[1]):
+        # contribution de la variable i POUR TOUTES les lignes
+        f_i = gam.partial_dependence(term=i, X=X)
+        contrib_matrix.append(f_i)
+
+    # shape = (n_samples, n_features)
+    contrib_matrix = np.column_stack(contrib_matrix)
+
+    # dataframe lisible
+    df_contrib = pd.DataFrame(
+        contrib_matrix,
+        columns=X.columns
+    )
     return df_contrib
 

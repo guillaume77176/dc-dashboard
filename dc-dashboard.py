@@ -118,11 +118,12 @@ try:
 
     actions_opt = get_control(end_date, steps=nb_step_predict)
 
+    df_interpret_10min = interpret(end_date, steps=nb_step_predict)
+
 except NameError:
     pass
 
-if end_date:
-    df_interpret_10min = interpret(end_date)
+
 
 #####################################################################
                     ##### mise à jour viz predictions ######  
@@ -138,6 +139,9 @@ if "pred_y" not in st.session_state:
 
 if "act_t" not in st.session_state:
     st.session_state.act_t = []
+
+if "contrib_t" not in st.session_state:
+     st.session_state.contrib_t = []
 
 if "idx_y" not in st.session_state:
     st.session_state.idx_y = 0
@@ -155,12 +159,15 @@ if st.button("🔮 Next prediction step (from xgb)"):
     if st.session_state.idx_y < len(pred):
         delta = pred[st.session_state.idx_y]
         act = actions_opt.iloc[st.session_state.idx_y,:]
+        contrib = df_interpret_10min.iloc[st.session_state.idx_y,:]
     else:
         delta = pred[-1]  # fallback
         act = actions_opt.iloc[-1,:]
+        contrib = df_interpret_10min.iloc[-1,:]
 
     new_pred = delta
     new_action = act
+    new_contrib = contrib
 
     # temps
     if len(st.session_state.pred_x) == 0:
@@ -174,6 +181,7 @@ if st.button("🔮 Next prediction step (from xgb)"):
     st.session_state.pred_y.append(new_pred)
     st.session_state.pred_x.append(new_time)
     st.session_state.act_t.append(new_action)
+    st.session_state.contrib_t.append(new_contrib)
     st.session_state.idx_y += 1
 
 if st.button("🔄 Refresh"):
@@ -216,8 +224,10 @@ st.divider()
 
 st.markdown("### 🧠 Interpretation for the next 10 min : get the ranking of contribution (from gam model)")
 
-if df_interpret_10min is not None:
-    st.write(df_interpret_10min[["variable","contribution"]])
+if len(st.session_state.contrib_t) != 0:
+    st.write(st.session_state.contrib_t[-1])
+else:
+    st.text("Make predictions to get the ranking of contributions")
 
 
 #####################################################################
@@ -228,5 +238,8 @@ st.divider()
 
 st.markdown("### 🎛️ Optimal control (free-cooling and chiller valves) for the next 10 min (from CQL(H) actor-critic)")
 
-st.write(st.session_state.act_t[-1][["index_time","free-cooling valves clim 1","chiller valves clim 1","free-cooling valves clim 2","chiller valves clim 2"]])
+if len(st.session_state.act_t) != 0:
+    st.write(st.session_state.act_t[-1][["index_time","free-cooling valves clim 1","chiller valves clim 1","free-cooling valves clim 2","chiller valves clim 2"]])
+else:
+    st.text("Make predictions to get optimal actions")
 
