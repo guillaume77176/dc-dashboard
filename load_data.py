@@ -26,7 +26,7 @@ def get_X_cop2(data, end_date, steps):
 def get_control(data, end_date, steps):
     data["index_time"] = pd.to_datetime(data["index_time"], utc=True)
     end_date = pd.to_datetime(end_date, utc=True)
-    mask = (data["index_time"] > end_date)
+    mask = (data["index_time"] => end_date)
     data = data.loc[mask]
     data = data.iloc[0:steps,:]
     return data
