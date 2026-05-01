@@ -1,3 +1,6 @@
 streamlit
-scikit-learn
-xgboost
+joblib
+tensorflow
+pandas
+datetime 
+plotly.graph_objects
