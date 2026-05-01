@@ -165,7 +165,9 @@ columns_to_plot = ["index_time"] + [selected_metric]
 
 
 df = get_data_viz(data_global, columns_to_plot)
+df_hist = get_data_viz(data_global, columns_to_plot)
 df["index_time"] = pd.to_datetime(df["index_time"])
+df_hist["index_time"] = pd.to_datetime(df_hist["index_time"])
 
 
 
@@ -174,7 +176,7 @@ try:
     end_date = pd.to_datetime(end_date)
     mask1 = (df["index_time"] >= start_date) & (df["index_time"] <= end_date)
     mask2 = (df["index_time"] >= end_date)
-    df_hist = df.loc[mask2].iloc[:nb_step_predict,:]
+    df_hist = df_hist.loc[mask2].iloc[:,:]
     df = df.loc[mask1]
 
     pred = func_c(data_it, model, end_date, steps=nb_step_predict)
