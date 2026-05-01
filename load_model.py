@@ -30,6 +30,7 @@ def interpret_cop1(end_date, steps):
         # contribution de la variable i POUR TOUTES les lignes
         f_i = gam.partial_dependence(term=i, X=X)
     # shape = (n_samples, n_features)
+        contrib_matrix.append(f_i)
     contrib_matrix = np.column_stack(contrib_matrix)
 
     # dataframe lisible
