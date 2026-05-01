@@ -36,9 +36,9 @@ def pred_ppue(data, ppue, end_date, steps):
     ])
     X_ppue = X_ppue[col]
 
-    pred_ppue = ppue.predict(X_ppue)
+    pred_pue = ppue.predict(X_ppue)
 
-    return pred_ppue
+    return pred_pue
 
 
 
