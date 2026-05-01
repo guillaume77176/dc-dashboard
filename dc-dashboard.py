@@ -173,7 +173,7 @@ try:
     start_date = pd.to_datetime(start_date)
     end_date = pd.to_datetime(end_date)
     mask1 = (df["index_time"] >= start_date) & (df["index_time"] <= end_date)
-    mask2 = (df["index_time"] > end_date)
+    mask2 = (df["index_time"] >= end_date)
     df_hist = df.loc[mask2].iloc[:nb_step_predict,:]
     df = df.loc[mask1]
 
@@ -192,7 +192,8 @@ except NameError:
 
 hist_x = df["index_time"]
 hist_y = df[selected_metric]
-df_hist = df_hist[selected_metric]
+df_hist_x = df_hist["index_time"]
+df_hist_y = df_hist[selected_metric]
 
 if "pred_x" not in st.session_state:
     st.session_state.pred_x = []
@@ -202,6 +203,9 @@ if "pred_y" not in st.session_state:
 
 if "historical_y" not in st.session_state:
     st.session_state.historical_y = []
+
+if "historical_x" not in st.session_state:
+    st.session_state.historical_x = []
 
 if "act_t" not in st.session_state:
     st.session_state.act_t = []
@@ -226,12 +230,18 @@ if st.button("🔮 Next prediction step (from xgb)"):
         delta = pred[st.session_state.idx_y]
         act = actions_opt.iloc[st.session_state.idx_y,:]
         contrib = df_interpret_10min.iloc[st.session_state.idx_y,:]
-        historical_y = df_hist.iloc[st.session_state.idx_y]
+
+        historical_y = df_hist_y.iloc[st.session_state.idx_y]
+        historical_x = df_hist_x.iloc[st.session_state.idx_y]
+
     else:
         delta = pred[-1]  # fallback
         act = actions_opt.iloc[-1,:]
         contrib = df_interpret_10min.iloc[-1,:]
-        historical_y = df_hist.iloc[-1]
+
+        historical_y = df_hist_y.iloc[-1]
+        historical_x = df_hist_x.iloc[-1]
+
 
     new_pred = delta
     new_action = act
@@ -245,6 +255,7 @@ if st.button("🔮 Next prediction step (from xgb)"):
         last_time = st.session_state.pred_x[-1]
 
     new_time = last_time + pd.Timedelta(minutes=10)
+    new_time_hist = historical_x
 
     # update state
     st.session_state.pred_y.append(new_pred)
@@ -252,6 +263,7 @@ if st.button("🔮 Next prediction step (from xgb)"):
     st.session_state.act_t.append(new_action)
     st.session_state.contrib_t.append(new_contrib)
     st.session_state.historical_y.append(new_hist)
+    st.session_state.historical_x.append(new_time_hist)
     st.session_state.idx_y += 1
 
 if st.button("🔄 Refresh"):
@@ -270,7 +282,7 @@ with cols[1]:
     ))
 
     fig.add_trace(go.Scatter(
-        x=st.session_state.pred_x,
+        x=st.session_state.historical_x,
         y=st.session_state.historical_y,
         name=f"current {met}",
         line=dict(color="white", dash = "dash")
