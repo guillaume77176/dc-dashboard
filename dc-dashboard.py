@@ -15,7 +15,7 @@
 
 import streamlit as st
 import pandas as pd
-from load_data import get_data_viz
+from load_data import get_data_viz, get_control
 from load_model import pred_cop1, pred_cop2, interpret_cop1, interpret_cop2, actor
 import plotly.graph_objects as go
 import datetime as dt
@@ -116,7 +116,7 @@ try:
 
     pred = model(end_date, steps=nb_step_predict)
 
-    actions_opt = actor(end_date, steps)
+    actions_opt = get_control(end_date, steps)
 
 except NameError:
     pass
@@ -154,10 +154,10 @@ if st.button("🔮 Next prediction step (from xgb)"):
     # sécurité index
     if st.session_state.idx_y < len(pred):
         delta = pred[st.session_state.idx_y]
-        act = actions_opt[st.session_state.idx_y,:]
+        act = actions_opt.iloc[st.session_state.idx_y,:]
     else:
         delta = pred[-1]  # fallback
-        act = actions_opt[-1,:]
+        act = actions_opt.iloc[-1,:]
 
     new_pred = delta
     new_action = act
@@ -228,5 +228,5 @@ st.divider()
 
 st.markdown("### 🎛️ Optimal control (free-cooling and chiller valves) for the next 10 min (from CQL(H) actor-critic)")
 
-st.write(pd.DataFrame(st.session_state.act_t, columns = ["clim 1 free-cooling","clim 1 chiller","clim 2 free-cooling","clim 2 chiller"]))
+st.write(actions_opt)
 
