@@ -225,6 +225,7 @@ st.divider()
 st.markdown("### 🧠 Interpretation for the next 10 min : get the ranking of contribution (from gam model)")
 
 if len(st.session_state.contrib_t) != 0:
+    st.session_state.contrib_t[-1] = st.session_state.contrib_t[-1].sort_value(ascending = True)
     st.write(st.session_state.contrib_t[-1])
 else:
     st.text("Make predictions to get the ranking of contributions")
