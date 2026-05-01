@@ -192,6 +192,7 @@ except NameError:
 
 hist_x = df["index_time"]
 hist_y = df[selected_metric]
+df_hist = df_hist[selected_metric]
 
 if "pred_x" not in st.session_state:
     st.session_state.pred_x = []
@@ -229,7 +230,7 @@ if st.button("🔮 Next prediction step (from xgb)"):
     else:
         delta = pred[-1]  # fallback
         act = actions_opt.iloc[-1,:]
-        contrib = df_interpret_10min.iloc[-1,:0]
+        contrib = df_interpret_10min.iloc[-1,:]
         historical_y = df_hist.iloc[-1,0]
 
     new_pred = delta
