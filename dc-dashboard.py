@@ -16,7 +16,7 @@
 import streamlit as st
 import pandas as pd
 from load_data import get_data_viz, get_control
-from load_model import pred_cop1, pred_cop2, interpret_cop1, interpret_cop2
+from load_model import pred_cop1, pred_cop2, pred_ppue, interpret_cop1, interpret_cop2, interpret_ppue
 import plotly.graph_objects as go
 import datetime as dt
 import joblib
@@ -29,10 +29,11 @@ st.set_page_config(
 )
 
 """
-# :material/query_stats: Dashboard Simulation - Data center X (first containment) | v.1.1
+# :material/query_stats: Dashboard Simulation - Data center X (first containment) | 
 """
 
 ""  
+st.text("AUTHORS : Guillaume Roustan, Guy Angoula, Emile Guillaume | Statapp ENSAE/KAPSDATA, Mai 2026.")
 st.text("Predict metrics of interest, retrieve suspicious variables by an interpretation of contributions, and get the best decisions to make for modifying free-cooling and chiller valves")
 cols = st.columns([1, 3])
 
@@ -62,6 +63,12 @@ def get_data_control():
     return data
 
 
+@st.cache_data
+def get_data_ppue():
+    data = pd.read_csv("https://minio.lab.sspcloud.fr/guillaume176/diffusion/dataset_xgboost_ready_ppue_clim1.csv?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=2QJKCN12R269GN3HPELE%2F20260501%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260501T153226Z&X-Amz-Expires=604800&X-Amz-Security-Token=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NLZXkiOiIyUUpLQ04xMlIyNjlHTjNIUEVMRSIsImFsbG93ZWQtb3JpZ2lucyI6WyIqIl0sImF1ZCI6WyJtaW5pby1kYXRhbm9kZSIsIm9ueXhpYSIsImFjY291bnQiXSwiYXV0aF90aW1lIjoxNzc3NjQ5MDY1LCJhenAiOiJvbnl4aWEiLCJjbmYiOnsiamt0IjoiYjFoengtSjRKOUxJbjRuLTJ0WFlWUGxFeUZtWEFZTkdndEZIRHZMaDNLNCJ9LCJlbWFpbCI6Imd1aWxsYXVtZS5yb3VzdGFuQGVuc2FlLmZyIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImV4cCI6MTc3ODI1Mzg3NCwiZmFtaWx5X25hbWUiOiJSb3VzdGFuIiwiZ2l2ZW5fbmFtZSI6Ikd1aWxsYXVtZSIsImdyb3VwcyI6WyJVU0VSX09OWVhJQSJdLCJpYXQiOjE3Nzc2NDkwNzQsImlzcyI6Imh0dHBzOi8vYXV0aC5sYWIuc3NwY2xvdWQuZnIvYXV0aC9yZWFsbXMvc3NwY2xvdWQiLCJqdGkiOiJvbnJ0cnQ6NTk2YWUxMjQtZDA0Yy1iNTczLTMzNmMtNGU4MWFjZDVlM2M1IiwibG9jYWxlIjoiZnIiLCJuYW1lIjoiR3VpbGxhdW1lIFJvdXN0YW4iLCJwb2xpY3kiOiJzdHNvbmx5IiwicHJlZmVycmVkX3VzZXJuYW1lIjoiZ3VpbGxhdW1lMTc2IiwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iLCJkZWZhdWx0LXJvbGVzLXNzcGNsb3VkIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwicm9sZXMiOlsib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiIsImRlZmF1bHQtcm9sZXMtc3NwY2xvdWQiXSwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBncm91cHMgZW1haWwiLCJzaWQiOiI2MWY3NzU0Yi01ZGRmLTVhZWQtYTJmNS03ODk4NWJkZGZmNWYiLCJzdWIiOiI5Mjc4NzJjYi03NjgyLTRkNDAtYjliNy04M2IyYjk3YWRmMjgiLCJ0eXAiOiJEUG9QIn0.9RgUiRutZRmY0SgDdTbgHvMU65cPf3B7ZzhPTkAtOkh2ghVTDshY7hWWazORKjw6HdkBKWoNP06DMlIhNk_Q7g&X-Amz-Signature=3594f0fbeb0c30d9f983165c145dafdeb7455d0b8fb5d55c1eaff1cb7ace3804&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject")
+    return data
+
+
 
 @st.cache_resource
 def model_cop1():
@@ -72,6 +79,16 @@ def model_cop1():
 def model_cop2():
     cop2 = joblib.load("models_cop/xgboost_cop_model2.pkl")
     return cop2
+
+@st.cache_resource
+def model_ppue():
+    ppue = joblib.load("models_ppue/xgboost_ppue_model.pkl")
+    return ppue
+
+@st.cache_resource
+def model_interpretppue():
+    gam = joblib.load("models_ppue/gam_ppue_model.pkl")
+    return gam
 
 @st.cache_resource
 def model_interpretc1():
@@ -86,22 +103,24 @@ def model_interpretc2():
 data_global = get_data_viz_ch()
 data_cop1 = get_data_cop1()
 data_cop2 = get_data_cop2()
+data_ppue = get_data_ppue()
 data_control = get_data_control()
 
 cop1 = model_cop1()
 cop2 = model_cop2()
 gam1 = model_interpretc1()
 gam2 = model_interpretc2()
+gam3 = model_interpretppue()
+ppue = model_ppue()
 
 
 st.markdown("### 🔮 Vizualise the predictions")
 
 # Time horizon selector
 metrics = {
-    "Cop clim 1" : "COP_v1_clim_1",
-    "Cop clim 2" : "COP_v1_clim_2",
-    "Ppue clim 1" : "pp c1",
-    "Ppue clim 2" : "pp c2",
+    "Cop clim 1" : ["COP_v1_clim_1"],
+    "Cop clim 2" : ["COP_v1_clim_2"],
+    "Ppue" : ["ConfinementPPUE_1","OnduleurPuissance_1"]
     
 }
 
@@ -137,6 +156,12 @@ with top_left_cell1:
         data_it = data_cop2
         func_c = pred_cop2
         func_gam = interpret_cop2
+    else:
+        model = ppue
+        interpret = gam3
+        data_it = data_ppue
+        func_c = pred_ppue
+        func_gam = interpret_ppue
 
 
 with top_left_cell2:
@@ -149,35 +174,62 @@ with top_left_cell2:
 
 with top_left_cell3:
     try:
-        start_date, end_date = st.date_input(
-        "Select the past data to be graphed before starting the predictions (1 day interval is recommended)",
-        value=(dt.date(2026, 2, 1), dt.date(2026, 2, 2)),
-        min_value=dt.date(2025, 10, 13),
-        max_value=dt.date(2026, 2, 27)
-        )
+        if met != "Ppue":
+            start_date, end_date = st.date_input(
+            "Select the past data to be graphed before starting the predictions (1 day interval is recommended)",
+            value=(dt.date(2026, 2, 1), dt.date(2026, 2, 2)),
+            min_value=dt.date(2025, 10, 13),
+            max_value=dt.date(2026, 2, 27)
+            )
+        else:
+            start_date, end_date = st.date_input(
+            "Select the past data to be graphed before starting the predictions (1 day interval is recommended)",
+            value=(dt.date(2026, 2, 1), dt.date(2026, 2, 2)),
+            min_value=dt.date(2025, 12, 4),
+            max_value=dt.date(2026, 2, 27)
+            )
     except ValueError:
         pass
 
 #####################################################################
 
-selected_metric = metrics[met]
-columns_to_plot = ["index_time"] + [selected_metric]
-
-
-df = get_data_viz(data_global, columns_to_plot)
-df_hist = get_data_viz(data_global, columns_to_plot)
-df["index_time"] = pd.to_datetime(df["index_time"])
-df_hist["index_time"] = pd.to_datetime(df_hist["index_time"])
+if met != "Ppue":
+    selected_metric = metrics[met]
+    columns_to_plot = ["index_time"] + selected_metric
+    df = get_data_viz(data_global, columns_to_plot)
+    df_hist = get_data_viz(data_global, columns_to_plot)
+    df["index_time"] = pd.to_datetime(df["index_time"])
+    df_hist["index_time"] = pd.to_datetime(df_hist["index_time"])
+    start_date = pd.to_datetime(start_date)
+    end_date = pd.to_datetime(end_date)
+else:
+    selected_metric = metrics[met]
+    columns_to_plot = ["_time"] + selected_metric
+    df = get_data_viz(data_ppue, columns_to_plot)
+    df_hist = get_data_viz(data_ppue, columns_to_plot)
+    df_form = get_data_viz(data_ppue, columns_to_plot)
+    df = df.rename(columns={"_time": "index_time"})
+    df_hist = df_hist.rename(columns={"_time": "index_time"})
+    df_form = df_form.rename(columns={"_time": "index_time"})
+    df["index_time"] = pd.to_datetime(df["index_time"])
+    df_hist["index_time"] = pd.to_datetime(df_hist["index_time"])
+    df_form["index_time"] = pd.to_datetime(df_form["index_time"])
+    df = df.drop(["OnduleurPuissance_1"], axis = 1)
+    df_hist = df_hist.drop(["OnduleurPuissance_1"], axis = 1)
 
 
 
 try:
+
     start_date = pd.to_datetime(start_date)
     end_date = pd.to_datetime(end_date)
+        
     mask1 = (df["index_time"] >= start_date) & (df["index_time"] <= end_date)
-    mask2 = (df["index_time"] >= end_date)
+    mask2 = (df_hist["index_time"] >= end_date)
     df_hist = df_hist.loc[mask2].iloc[:nb_step_predict,:]
     df = df.loc[mask1]
+    if met == "Ppue":
+        df_form = df_form.loc[mask2]
 
     pred = func_c(data_it, model, end_date, steps=nb_step_predict)
 
@@ -193,9 +245,9 @@ except NameError:
                     ##### mise à jour viz predictions ######  
 
 hist_x = df["index_time"]
-hist_y = df[selected_metric]
+hist_y = df[selected_metric[0]]
 df_hist_x = df_hist["index_time"]
-df_hist_y = df_hist[selected_metric]
+df_hist_y = df_hist[selected_metric[0]]
 
 if "pred_x" not in st.session_state:
     st.session_state.pred_x = []
@@ -229,7 +281,10 @@ if st.button("🔮 Next prediction step (from xgb)"):
 
     # sécurité index
     if st.session_state.idx_y < len(pred):
-        delta = pred[st.session_state.idx_y]
+        if met == "Ppue":
+            delta = 1 + pred[st.session_state.idx_y]/df_form["OnduleurPuissance_1"].iloc[st.session_state.idx_y]
+        else:
+            delta = pred[st.session_state.idx_y]
         act = actions_opt.iloc[st.session_state.idx_y,:]
         contrib = df_interpret_10min.iloc[st.session_state.idx_y,:]
 
@@ -237,7 +292,11 @@ if st.button("🔮 Next prediction step (from xgb)"):
         historical_x = df_hist_x.iloc[st.session_state.idx_y]
 
     else:
-        delta = pred[-1]  # fallback
+        if met == "Ppue":
+            delta = 1 + pred[-1]/df_form["OnduleurPuissance_1"].iloc[-1]
+        else:
+            delta = pred[-1]
+
         act = actions_opt.iloc[-1,:]
         contrib = df_interpret_10min.iloc[-1,:]
 
@@ -287,7 +346,7 @@ with cols[1]:
         x=st.session_state.historical_x,
         y=st.session_state.historical_y,
         name=f"current {met}",
-        line=dict(color="white", dash = "dash")
+        line=dict(color="purple", dash = "dash")
     ))
 
     fig.add_trace(go.Scatter(
@@ -314,11 +373,11 @@ with cols[1]:
 
 st.divider()
 
-st.markdown("### 🧠 Interpretation for the next 10 min : get the ranking of contribution (from gam model)")
+st.markdown("### 🧠 Interpretation for the next 10 min : get the ranking of contributions (from gam model)")
 
 if len(st.session_state.contrib_t) != 0:
 
-    st.text(f"current : {st.session_state.historical_x[-1]} | forecast : {st.session_state.pred_x[-1]}")
+    st.text(f"Chosen Metric : {met} | Current Date : {st.session_state.historical_x[-1]} | Forecast : {st.session_state.pred_x[-1]}")
     st.write(st.session_state.contrib_t[-1])
 
 else:
