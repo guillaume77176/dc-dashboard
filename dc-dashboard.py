@@ -228,5 +228,5 @@ st.divider()
 
 st.markdown("### 🎛️ Optimal control (free-cooling and chiller valves) for the next 10 min (from CQL(H) actor-critic)")
 
-st.write(actions_opt)
+st.write(st.session_state.act_t)
 
