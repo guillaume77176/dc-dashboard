@@ -19,6 +19,7 @@ from load_data import get_data_viz, get_control
 from load_model import pred_cop1, pred_cop2, interpret_cop1, interpret_cop2
 import plotly.graph_objects as go
 import datetime as dt
+import joblib
 
 
 st.set_page_config(
