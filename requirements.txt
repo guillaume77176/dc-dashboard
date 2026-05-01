@@ -2,4 +2,4 @@ streamlit
 joblib
 pandas
 datetime 
-plotly.graph_objects
+plotly
