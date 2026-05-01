@@ -116,7 +116,7 @@ try:
 
     pred = model(end_date, steps=nb_step_predict)
 
-    actions_opt = get_control(end_date, steps)
+    actions_opt = get_control(end_date, steps=nb_step_predict)
 
 except NameError:
     pass
@@ -228,5 +228,5 @@ st.divider()
 
 st.markdown("### 🎛️ Optimal control (free-cooling and chiller valves) for the next 10 min (from CQL(H) actor-critic)")
 
-st.write(actions_opt)
+st.write(st.session_state.act_t)
 
