@@ -28,7 +28,7 @@ def get_control(data, end_date, steps):
     end_date = pd.to_datetime(end_date, utc=True)
     mask = (data["index_time"] >= end_date)
     data = data.loc[mask]
-    data = data.iloc[0:steps,:]
+    data = data.iloc[:,:]
     return data
     
 
