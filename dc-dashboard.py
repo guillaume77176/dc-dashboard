@@ -29,11 +29,11 @@ st.set_page_config(
 )
 
 """
-# :material/query_stats: Dashboard Simulation - Data center X (first containment)
+# :material/query_stats: Dashboard Simulation - Data center X (first containment) | v.1.1
 """
 
 ""  
-st.text("Predict metrics of interest, retrieve suspicious commands, and predict the best decisions to make for modifying free-cooling and chiller valves")
+st.text("Predict metrics of interest, retrieve suspicious variables by an interpretation of contributions, and get the best decisions to make for modifying free-cooling and chiller valves")
 cols = st.columns([1, 3])
 
 
