@@ -33,13 +33,13 @@ def interpret_cop1(end_date, steps):
         contrib_matrix.append(f_i)
     contrib_matrix = np.column_stack(contrib_matrix)
 
-    # dataframe lisible
-    df_contrib = pd.DataFrame(
-        contrib_matrix,
-        columns=X.columns
-    )
-
+    
+    df_contrib = pd.DataFrame({ "variable": input.columns, "contribution": contributions })
+    df_contrib["abs"] = df_contrib["contribution"].abs()
+    df_contrib = df_contrib.sort_values("abs", ascending=False)
+    df_contrib = df_contrib.drop(["abs"], axis =1)
     return df_contrib
+
 
 def interpret_cop2(end_date, steps):
     X = get_X_cop2(end_date=end_date, steps=steps)
@@ -56,10 +56,9 @@ def interpret_cop2(end_date, steps):
     # shape = (n_samples, n_features)
     contrib_matrix = np.column_stack(contrib_matrix)
 
-    # dataframe lisible
-    df_contrib = pd.DataFrame(
-        contrib_matrix,
-        columns=X.columns
-    )
-    return df_contrib.sort_values(ascending=False)
+    df_contrib = pd.DataFrame({ "variable": input.columns, "contribution": contributions })
+    df_contrib["abs"] = df_contrib["contribution"].abs()
+    df_contrib = df_contrib.sort_values("abs", ascending=False)
+    df_contrib = df_contrib.drop(["abs"], axis =1)
+    return df_contrib
 
