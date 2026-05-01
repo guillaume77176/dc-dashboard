@@ -40,31 +40,58 @@ cols = st.columns([1, 3])
 
 st.divider()
 
+@st.cache_data
+def get_data_viz_ch():
+    data = pd.read_csv("https://minio.lab.sspcloud.fr/guillaume176/diffusion/data.csv?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=YZGBQ1SDECI0HYL1PZIO%2F20260430%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260430T182446Z&X-Amz-Expires=604800&X-Amz-Security-Token=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NLZXkiOiJZWkdCUTFTREVDSTBIWUwxUFpJTyIsImFsbG93ZWQtb3JpZ2lucyI6WyIqIl0sImF1ZCI6WyJtaW5pby1kYXRhbm9kZSIsIm9ueXhpYSIsImFjY291bnQiXSwiYXV0aF90aW1lIjoxNzc3NTcyMzczLCJhenAiOiJvbnl4aWEiLCJjbmYiOnsiamt0IjoiYjFoengtSjRKOUxJbjRuLTJ0WFlWUGxFeUZtWEFZTkdndEZIRHZMaDNLNCJ9LCJlbWFpbCI6Imd1aWxsYXVtZS5yb3VzdGFuQGVuc2FlLmZyIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImV4cCI6MTc3ODE3NzE4MiwiZmFtaWx5X25hbWUiOiJSb3VzdGFuIiwiZ2l2ZW5fbmFtZSI6Ikd1aWxsYXVtZSIsImdyb3VwcyI6WyJVU0VSX09OWVhJQSJdLCJpYXQiOjE3Nzc1NzIzODIsImlzcyI6Imh0dHBzOi8vYXV0aC5sYWIuc3NwY2xvdWQuZnIvYXV0aC9yZWFsbXMvc3NwY2xvdWQiLCJqdGkiOiJvbnJ0cnQ6NTYyYzgzMTctNTQ4MC04YTIxLTBjMDUtZTQxZDA0ZDVkZDAyIiwibG9jYWxlIjoiZnIiLCJuYW1lIjoiR3VpbGxhdW1lIFJvdXN0YW4iLCJwb2xpY3kiOiJzdHNvbmx5IiwicHJlZmVycmVkX3VzZXJuYW1lIjoiZ3VpbGxhdW1lMTc2IiwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iLCJkZWZhdWx0LXJvbGVzLXNzcGNsb3VkIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwicm9sZXMiOlsib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiIsImRlZmF1bHQtcm9sZXMtc3NwY2xvdWQiXSwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBncm91cHMgZW1haWwiLCJzaWQiOiI1MmRiODA2Yy0xY2M3LTIxNWEtNGIxNi00ZTYxNWFlYjYyNzMiLCJzdWIiOiI5Mjc4NzJjYi03NjgyLTRkNDAtYjliNy04M2IyYjk3YWRmMjgiLCJ0eXAiOiJEUG9QIn0.clL9Hed7aBw1UeEYCE06MNlh3rXwR3PCuRW0uVjxkFGP9h6JWp2KnblNj33jz1WuUyuCic3hF03FDhGuUP9GWQ&X-Amz-Signature=48a9623ffed4b959ea8502f5fd3318fcbfb03c9c05501308cfc717ef7bbcd152&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject")
+    return data
 
 @st.cache_data
-def load_dataa(columns):
-    df = get_data_viz(columns)
-    df["index_time"] = pd.to_datetime(df["index_time"])
-    return df
-
-@st.cache_resource
-def load_model_real(model, end_date, steps):
-    return model(end_date, steps=steps)
+def get_data_cop1():
+    data = pd.read_csv("https://minio.lab.sspcloud.fr/guillaume176/diffusion/dataset_xgboost_ready_COP_v1_clim_1.csv?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=YZGBQ1SDECI0HYL1PZIO%2F20260430%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260430T214341Z&X-Amz-Expires=604800&X-Amz-Security-Token=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NLZXkiOiJZWkdCUTFTREVDSTBIWUwxUFpJTyIsImFsbG93ZWQtb3JpZ2lucyI6WyIqIl0sImF1ZCI6WyJtaW5pby1kYXRhbm9kZSIsIm9ueXhpYSIsImFjY291bnQiXSwiYXV0aF90aW1lIjoxNzc3NTcyMzczLCJhenAiOiJvbnl4aWEiLCJjbmYiOnsiamt0IjoiYjFoengtSjRKOUxJbjRuLTJ0WFlWUGxFeUZtWEFZTkdndEZIRHZMaDNLNCJ9LCJlbWFpbCI6Imd1aWxsYXVtZS5yb3VzdGFuQGVuc2FlLmZyIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImV4cCI6MTc3ODE3NzE4MiwiZmFtaWx5X25hbWUiOiJSb3VzdGFuIiwiZ2l2ZW5fbmFtZSI6Ikd1aWxsYXVtZSIsImdyb3VwcyI6WyJVU0VSX09OWVhJQSJdLCJpYXQiOjE3Nzc1NzIzODIsImlzcyI6Imh0dHBzOi8vYXV0aC5sYWIuc3NwY2xvdWQuZnIvYXV0aC9yZWFsbXMvc3NwY2xvdWQiLCJqdGkiOiJvbnJ0cnQ6NTYyYzgzMTctNTQ4MC04YTIxLTBjMDUtZTQxZDA0ZDVkZDAyIiwibG9jYWxlIjoiZnIiLCJuYW1lIjoiR3VpbGxhdW1lIFJvdXN0YW4iLCJwb2xpY3kiOiJzdHNvbmx5IiwicHJlZmVycmVkX3VzZXJuYW1lIjoiZ3VpbGxhdW1lMTc2IiwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iLCJkZWZhdWx0LXJvbGVzLXNzcGNsb3VkIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwicm9sZXMiOlsib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiIsImRlZmF1bHQtcm9sZXMtc3NwY2xvdWQiXSwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBncm91cHMgZW1haWwiLCJzaWQiOiI1MmRiODA2Yy0xY2M3LTIxNWEtNGIxNi00ZTYxNWFlYjYyNzMiLCJzdWIiOiI5Mjc4NzJjYi03NjgyLTRkNDAtYjliNy04M2IyYjk3YWRmMjgiLCJ0eXAiOiJEUG9QIn0.clL9Hed7aBw1UeEYCE06MNlh3rXwR3PCuRW0uVjxkFGP9h6JWp2KnblNj33jz1WuUyuCic3hF03FDhGuUP9GWQ&X-Amz-Signature=dc5db77d30a186a199bfc0cc34484ba746043c6cf267db0b3feeca57057e9615&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject")
+    return data
 
 @st.cache_data
-def load_control(end_date, steps):
-    return get_control(end_date, steps)
+def get_data_cop2():
+    data = pd.read_csv("https://minio.lab.sspcloud.fr/guillaume176/diffusion/dataset_xgboost_ready_COP_v1_clim_2.csv?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=YZGBQ1SDECI0HYL1PZIO%2F20260430%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260430T214922Z&X-Amz-Expires=604800&X-Amz-Security-Token=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NLZXkiOiJZWkdCUTFTREVDSTBIWUwxUFpJTyIsImFsbG93ZWQtb3JpZ2lucyI6WyIqIl0sImF1ZCI6WyJtaW5pby1kYXRhbm9kZSIsIm9ueXhpYSIsImFjY291bnQiXSwiYXV0aF90aW1lIjoxNzc3NTcyMzczLCJhenAiOiJvbnl4aWEiLCJjbmYiOnsiamt0IjoiYjFoengtSjRKOUxJbjRuLTJ0WFlWUGxFeUZtWEFZTkdndEZIRHZMaDNLNCJ9LCJlbWFpbCI6Imd1aWxsYXVtZS5yb3VzdGFuQGVuc2FlLmZyIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImV4cCI6MTc3ODE3NzE4MiwiZmFtaWx5X25hbWUiOiJSb3VzdGFuIiwiZ2l2ZW5fbmFtZSI6Ikd1aWxsYXVtZSIsImdyb3VwcyI6WyJVU0VSX09OWVhJQSJdLCJpYXQiOjE3Nzc1NzIzODIsImlzcyI6Imh0dHBzOi8vYXV0aC5sYWIuc3NwY2xvdWQuZnIvYXV0aC9yZWFsbXMvc3NwY2xvdWQiLCJqdGkiOiJvbnJ0cnQ6NTYyYzgzMTctNTQ4MC04YTIxLTBjMDUtZTQxZDA0ZDVkZDAyIiwibG9jYWxlIjoiZnIiLCJuYW1lIjoiR3VpbGxhdW1lIFJvdXN0YW4iLCJwb2xpY3kiOiJzdHNvbmx5IiwicHJlZmVycmVkX3VzZXJuYW1lIjoiZ3VpbGxhdW1lMTc2IiwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iLCJkZWZhdWx0LXJvbGVzLXNzcGNsb3VkIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwicm9sZXMiOlsib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiIsImRlZmF1bHQtcm9sZXMtc3NwY2xvdWQiXSwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBncm91cHMgZW1haWwiLCJzaWQiOiI1MmRiODA2Yy0xY2M3LTIxNWEtNGIxNi00ZTYxNWFlYjYyNzMiLCJzdWIiOiI5Mjc4NzJjYi03NjgyLTRkNDAtYjliNy04M2IyYjk3YWRmMjgiLCJ0eXAiOiJEUG9QIn0.clL9Hed7aBw1UeEYCE06MNlh3rXwR3PCuRW0uVjxkFGP9h6JWp2KnblNj33jz1WuUyuCic3hF03FDhGuUP9GWQ&X-Amz-Signature=d541068f3c10f2c6bcaa0bfc04ba50d224f748226c4e4599edf8b6354dd8c1de&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject")
+    return data
 
 @st.cache_data
-def load_interpret(end_date, steps):
-    return interpret(end_date, steps)
+def get_data_control():
+    data = pd.read_csv("https://minio.lab.sspcloud.fr/guillaume176/diffusion/opt_actons.csv?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=YZGBQ1SDECI0HYL1PZIO%2F20260501%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260501T012228Z&X-Amz-Expires=604800&X-Amz-Security-Token=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NLZXkiOiJZWkdCUTFTREVDSTBIWUwxUFpJTyIsImFsbG93ZWQtb3JpZ2lucyI6WyIqIl0sImF1ZCI6WyJtaW5pby1kYXRhbm9kZSIsIm9ueXhpYSIsImFjY291bnQiXSwiYXV0aF90aW1lIjoxNzc3NTcyMzczLCJhenAiOiJvbnl4aWEiLCJjbmYiOnsiamt0IjoiYjFoengtSjRKOUxJbjRuLTJ0WFlWUGxFeUZtWEFZTkdndEZIRHZMaDNLNCJ9LCJlbWFpbCI6Imd1aWxsYXVtZS5yb3VzdGFuQGVuc2FlLmZyIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImV4cCI6MTc3ODE3NzE4MiwiZmFtaWx5X25hbWUiOiJSb3VzdGFuIiwiZ2l2ZW5fbmFtZSI6Ikd1aWxsYXVtZSIsImdyb3VwcyI6WyJVU0VSX09OWVhJQSJdLCJpYXQiOjE3Nzc1NzIzODIsImlzcyI6Imh0dHBzOi8vYXV0aC5sYWIuc3NwY2xvdWQuZnIvYXV0aC9yZWFsbXMvc3NwY2xvdWQiLCJqdGkiOiJvbnJ0cnQ6NTYyYzgzMTctNTQ4MC04YTIxLTBjMDUtZTQxZDA0ZDVkZDAyIiwibG9jYWxlIjoiZnIiLCJuYW1lIjoiR3VpbGxhdW1lIFJvdXN0YW4iLCJwb2xpY3kiOiJzdHNvbmx5IiwicHJlZmVycmVkX3VzZXJuYW1lIjoiZ3VpbGxhdW1lMTc2IiwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iLCJkZWZhdWx0LXJvbGVzLXNzcGNsb3VkIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwicm9sZXMiOlsib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiIsImRlZmF1bHQtcm9sZXMtc3NwY2xvdWQiXSwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBncm91cHMgZW1haWwiLCJzaWQiOiI1MmRiODA2Yy0xY2M3LTIxNWEtNGIxNi00ZTYxNWFlYjYyNzMiLCJzdWIiOiI5Mjc4NzJjYi03NjgyLTRkNDAtYjliNy04M2IyYjk3YWRmMjgiLCJ0eXAiOiJEUG9QIn0.clL9Hed7aBw1UeEYCE06MNlh3rXwR3PCuRW0uVjxkFGP9h6JWp2KnblNj33jz1WuUyuCic3hF03FDhGuUP9GWQ&X-Amz-Signature=c500ed7fa1a1494ded1d3ba8d2b22849081b829efed55e61548d6903da95d669&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject")
+    return data
 
-@st.cache_resource
-def load_modell(name):
-    if name == "Cop clim 1":
-        return pred_cop1
-    elif name == "Cop clim 2":
-        return pred_cop2
+
+
+@st.cache_ressource
+def model_cop1():
+    cop1 = joblib.load("models_cop/xgboost_cop_model1.pkl")
+    return cop1
+
+@st.cache_ressource
+def model_cop2():
+    cop2 = joblib.load("models_cop/xgboost_cop_model2.pkl")
+    return cop2
+
+@st.cache_ressource
+def model_interpretc1():
+    gam = joblib.load("models_cop/gam_cop_model1.pkl")
+    return gam
+
+@st.cache_ressource
+def model_interpretc2():
+    gam = joblib.load("models_cop/gam_cop_model2.pkl")
+    return gam
+
+data_global = get_data_viz_ch()
+data_cop1 = get_data_cop1()
+data_cop2 = get_data_cop2()
+data_control = get_data_control()
+
+cop1 = model_cop1()
+cop2 = model_cop2()
+gam1 = model_interpretc1()
+gam2 = model_interpretc2()
+
 
 st.markdown("### 🔮 Vizualise the predictions")
 
@@ -98,11 +125,17 @@ with top_left_cell1:
         default="Cop clim 1",
     )
     if met == "Cop clim 1":
-        model = pred_cop1
-        interpret = interpret_cop1
+        model = cop1
+        interpret = gam1
+        data_it = data_cop1
+        func_c = pred_cop1
+        func_gam = interpret_cop1
     elif met == "Cop clim 2":
-        model = pred_cop2
-        interpret = interpret_cop2
+        model = cop2
+        interpret = gam2
+        data_it = data_cop2
+        func_c = pred_cop2
+        func_gam = interpret_cop2
 
 
 with top_left_cell2:
@@ -132,20 +165,21 @@ columns_to_plot = ["index_time"] + [selected_metric]
 
 
 
+df = get_data_viz(data_global, columns_to_plot)
+df["index_time"] = pd.to_datetime(df["index_time"])
+
 
 try:
-    df = load_dataa(columns_to_plot)
     start_date = pd.to_datetime(start_date)
     end_date = pd.to_datetime(end_date)
     mask = (df["index_time"] >= start_date) & (df["index_time"] <= end_date)
     df = df.loc[mask]
 
-    modd = load_modell(met)
-    pred = load_model_real(modd, end_date, steps=nb_step_predict)
+    pred = func_c(data_it, model, end_date, steps=nb_step_predict)
 
-    actions_opt = load_control(end_date, steps=nb_step_predict)
+    actions_opt = get_control(data_control, end_date, steps=nb_step_predict)
 
-    df_interpret_10min = load_interpret(end_date, steps=nb_step_predict)
+    df_interpret_10min = interpret(data_it, gam, end_date, steps=nb_step_predict)
 
 except NameError:
     pass
