@@ -62,22 +62,22 @@ def get_data_control():
 
 
 
-@st.cache_ressource
+@st.cache_resource
 def model_cop1():
     cop1 = joblib.load("models_cop/xgboost_cop_model1.pkl")
     return cop1
 
-@st.cache_ressource
+@st.cache_resource
 def model_cop2():
     cop2 = joblib.load("models_cop/xgboost_cop_model2.pkl")
     return cop2
 
-@st.cache_ressource
+@st.cache_resource
 def model_interpretc1():
     gam = joblib.load("models_cop/gam_cop_model1.pkl")
     return gam
 
-@st.cache_ressource
+@st.cache_resource
 def model_interpretc2():
     gam = joblib.load("models_cop/gam_cop_model2.pkl")
     return gam
