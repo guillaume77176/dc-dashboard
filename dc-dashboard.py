@@ -181,7 +181,7 @@ try:
 
     pred = func_c(data_it, model, end_date, steps=nb_step_predict)
 
-    actions_opt = get_control(data_control, end_date, steps=nb_step_predict)
+    actions_opt = get_control(data_control, end_date, steps=nb_step_predict+1)
 
     df_interpret_10min = func_gam(data_it, interpret, end_date, steps=nb_step_predict)
 except NameError:
