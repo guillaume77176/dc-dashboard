@@ -275,7 +275,7 @@ with cols[1]:
         name=f"current {met}",
         line=dict(color="white", dash = "dash")
     ))
-    
+
     fig.add_trace(go.Scatter(
         x=st.session_state.pred_x,
         y=st.session_state.pred_y,
@@ -303,7 +303,10 @@ st.divider()
 st.markdown("### 🧠 Interpretation for the next 10 min : get the ranking of contribution (from gam model)")
 
 if len(st.session_state.contrib_t) != 0:
+
+    st.text(f"current : {st.session_state.pred_x}")
     st.write(st.session_state.contrib_t[-1])
+    
 else:
     st.text("Make predictions to get the ranking of contributions")
 
