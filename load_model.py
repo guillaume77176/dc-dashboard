@@ -61,5 +61,5 @@ def interpret_cop2(end_date, steps):
         contrib_matrix,
         columns=X.columns
     )
-    return df_contrib
+    return df_contrib.sort_values(ascending=False)
 
