@@ -1,6 +1,5 @@
 streamlit
 joblib
-tensorflow
 pandas
 datetime 
 plotly.graph_objects
