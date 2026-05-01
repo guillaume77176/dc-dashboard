@@ -200,7 +200,7 @@ if "pred_y" not in st.session_state:
     st.session_state.pred_y = []
 
 if "historical_y" not in st.session_state:
-    st.session_state.historical_y = []
+    st.session_state.historical_y = pd.DataFrame(columns=df.columns)
 
 if "act_t" not in st.session_state:
     st.session_state.act_t = []
@@ -250,7 +250,7 @@ if st.button("🔮 Next prediction step (from xgb)"):
     st.session_state.pred_x.append(new_time)
     st.session_state.act_t.append(new_action)
     st.session_state.contrib_t.append(new_contrib)
-    st.session_state.historical_y.append(new_hist)
+    st.session_state.historical_y = pd.concat([st.session_state.historical_y, new_hist], axis = 0)
     st.session_state.idx_y += 1
 
 if st.button("🔄 Refresh"):
