@@ -48,7 +48,7 @@ def load_dataa(columns):
     return df
 
 @st.cache_resource
-def load_modell(model, end_date, steps):
+def load_model_real(model, end_date, steps):
     return model(end_date, steps=steps)
 
 @st.cache_data
@@ -59,7 +59,12 @@ def load_control(end_date, steps):
 def load_interpret(end_date, steps):
     return interpret(end_date, steps)
 
-
+@st.cache_resource
+def load_modell(name):
+    if name == "Cop clim 1":
+        return pred_cop1
+    elif name == "Cop clim 2":
+        return pred_cop2
 
 st.markdown("### 🔮 Vizualise the predictions")
 
@@ -135,7 +140,8 @@ try:
     mask = (df["index_time"] >= start_date) & (df["index_time"] <= end_date)
     df = df.loc[mask]
 
-    pred = load_modell(end_date, steps=nb_step_predict)
+    modd = load_modell(met)
+    pred = load_model_real(modd, end_date, steps=nb_step_predict)
 
     actions_opt = load_control(end_date, steps=nb_step_predict)
 
