@@ -40,6 +40,27 @@ cols = st.columns([1, 3])
 
 st.divider()
 
+
+@st.cache_data
+def load_dataa(columns):
+    df = get_data_viz(columns)
+    df["index_time"] = pd.to_datetime(df["index_time"])
+    return df
+
+@st.cache_resource
+def load_modell(model, end_date, steps):
+    return model(end_date, steps=steps)
+
+@st.cache_data
+def load_control(end_date, steps):
+    return get_control(end_date, steps)
+
+@st.cache_data
+def load_interpret(end_date, steps):
+    return interpret(end_date, steps)
+
+
+
 st.markdown("### 🔮 Vizualise the predictions")
 
 # Time horizon selector
@@ -103,22 +124,22 @@ with top_left_cell3:
 selected_metric = metrics[met]
 columns_to_plot = ["index_time"] + [selected_metric]
 
-df = get_data_viz(columns_to_plot)
-df["index_time"] = pd.to_datetime(df["index_time"])
+
 
 
 
 try:
+    df = load_dataa(columns_to_plot)
     start_date = pd.to_datetime(start_date)
     end_date = pd.to_datetime(end_date)
     mask = (df["index_time"] >= start_date) & (df["index_time"] <= end_date)
     df = df.loc[mask]
 
-    pred = model(end_date, steps=nb_step_predict)
+    pred = load_modell(end_date, steps=nb_step_predict)
 
-    actions_opt = get_control(end_date, steps=nb_step_predict)
+    actions_opt = load_control(end_date, steps=nb_step_predict)
 
-    df_interpret_10min = interpret(end_date, steps=nb_step_predict)
+    df_interpret_10min = load_interpret(end_date, steps=nb_step_predict)
 
 except NameError:
     pass
