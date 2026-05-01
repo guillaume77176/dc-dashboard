@@ -304,9 +304,9 @@ st.markdown("### 🧠 Interpretation for the next 10 min : get the ranking of co
 
 if len(st.session_state.contrib_t) != 0:
 
-    st.text(f"current : {st.session_state.pred_x}")
+    st.text(f"current : {st.session_state.pred_x[-1]}")
     st.write(st.session_state.contrib_t[-1])
-    
+
 else:
     st.text("Make predictions to get the ranking of contributions")
 
