@@ -1,5 +1,6 @@
 import joblib
 import pandas as pd
+import numpy as np
 from load_data import get_X_cop1, get_X_cop2
 
 
@@ -27,9 +28,7 @@ def interpret_cop1(end_date, steps):
 
     for i in range(X.shape[1]):
         # contribution de la variable i POUR TOUTES les lignes
-        f_i = gam.partial_dependence(term=i, X=X)
-        contrib_matrix.append(f_i)
-
+        f_i = gam.partial_dependence(term=i, X=X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
     # shape = (n_samples, n_features)
     contrib_matrix = np.column_stack(contrib_matrix)
 
