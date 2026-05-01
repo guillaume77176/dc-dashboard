@@ -168,11 +168,14 @@ df = get_data_viz(data_global, columns_to_plot)
 df["index_time"] = pd.to_datetime(df["index_time"])
 
 
+
 try:
     start_date = pd.to_datetime(start_date)
     end_date = pd.to_datetime(end_date)
-    mask = (df["index_time"] >= start_date) & (df["index_time"] <= end_date)
-    df = df.loc[mask]
+    mask1 = (df["index_time"] >= start_date) & (df["index_time"] <= end_date)
+    mask2 = (df["index_time"] > end_date)
+    df_hist = df.loc[mask2].iloc[:nb_step_predict,:]
+    df = df.loc[mask1]
 
     pred = func_c(data_it, model, end_date, steps=nb_step_predict)
 
@@ -195,6 +198,9 @@ if "pred_x" not in st.session_state:
 
 if "pred_y" not in st.session_state:
     st.session_state.pred_y = []
+
+if "historical_y" not in st.session_state:
+    st.session_state.historical_y = []
 
 if "act_t" not in st.session_state:
     st.session_state.act_t = []
@@ -219,14 +225,17 @@ if st.button("🔮 Next prediction step (from xgb)"):
         delta = pred[st.session_state.idx_y]
         act = actions_opt.iloc[st.session_state.idx_y,:]
         contrib = df_interpret_10min.iloc[st.session_state.idx_y,:]
+        historical_y = df_hist.iloc[st.session_state.idx_y,:]
     else:
         delta = pred[-1]  # fallback
         act = actions_opt.iloc[-1,:]
         contrib = df_interpret_10min.iloc[-1,:]
+        historical_y = df_hist.iloc[-1,:]
 
     new_pred = delta
     new_action = act
     new_contrib = contrib
+    new_hist = historical_y
 
     # temps
     if len(st.session_state.pred_x) == 0:
@@ -241,6 +250,7 @@ if st.button("🔮 Next prediction step (from xgb)"):
     st.session_state.pred_x.append(new_time)
     st.session_state.act_t.append(new_action)
     st.session_state.contrib_t.append(new_contrib)
+    st.session_state.historical_y.append(new_hist)
     st.session_state.idx_y += 1
 
 if st.button("🔄 Refresh"):
@@ -263,6 +273,12 @@ with cols[1]:
         y=st.session_state.pred_y,
         name=f"forecasts {met}",
         line=dict(color="red", dash="dash")
+    ))
+
+    fig.add_trace(go.Scatter(
+        x=st.session_state.pred_x,
+        y=st.session_state.historical_y,
+        line=dict(color="blue")
     ))
 
     fig.update_layout(
