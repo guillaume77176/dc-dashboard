@@ -279,7 +279,8 @@ with cols[1]:
     fig.add_trace(go.Scatter(
         x=st.session_state.pred_x,
         y=st.session_state.historical_y,
-        line=dict(color="blue")
+        name=f"current {met}",
+        line=dict(color="white", dash = "dash")
     ))
 
     fig.update_layout(
