@@ -271,17 +271,18 @@ with cols[1]:
 
     fig.add_trace(go.Scatter(
         x=st.session_state.pred_x,
+        y=st.session_state.historical_y,
+        name=f"current {met}",
+        line=dict(color="white", dash = "dash")
+    ))
+    
+    fig.add_trace(go.Scatter(
+        x=st.session_state.pred_x,
         y=st.session_state.pred_y,
         name=f"forecasts {met}",
         line=dict(color="red", dash="dash")
     ))
 
-    fig.add_trace(go.Scatter(
-        x=st.session_state.pred_x,
-        y=st.session_state.historical_y,
-        name=f"current {met}",
-        line=dict(color="white", dash = "dash")
-    ))
 
     fig.update_layout(
         title=f"Historical / Forecasts for {met}",
