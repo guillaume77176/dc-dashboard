@@ -153,7 +153,7 @@ with top_left_cell3:
         "Select the past data to be graphed before starting the predictions (1 day interval is recommended)",
         value=(dt.date(2026, 2, 1), dt.date(2026, 3, 1)),
         min_value=dt.date(2025, 10, 13),
-        max_value=dt.date(2026, 3, 6)
+        max_value=dt.date(2026, 2, 27)
         )
     except ValueError:
         pass
