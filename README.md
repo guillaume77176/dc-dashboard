@@ -1,1 +1,1 @@
-# Offline-reinforcement-learning-for-data-center
+# Dashboard simulation for data-center (ENSAE/KAPSDATA)
