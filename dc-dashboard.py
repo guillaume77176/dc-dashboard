@@ -59,13 +59,13 @@ def get_data_cop2():
 
 @st.cache_data
 def get_data_control():
-    data = pd.read_csv("https://minio.lab.sspcloud.fr/guillaume176/diffusion/dataset_xgboost_ready_ppue_clim1.csv")
+    data = pd.read_csv("https://minio.lab.sspcloud.fr/guillaume176/diffusion/opt_actions.csv")
     return data
 
 
 @st.cache_data
 def get_data_ppue():
-    data = pd.read_csv("https://minio.lab.sspcloud.fr/guillaume176/diffusion/opt_actions.csv")
+    data = pd.read_csv("https://minio.lab.sspcloud.fr/guillaume176/diffusion/dataset_xgboost_ready_ppue_clim1.csv")
     return data
 
 
